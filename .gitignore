@@ -1,0 +1,10 @@
+node_modules/
+package-lock.json
+
+# Archivos de compilación para Typescript
+/dist/
+/build/
+
+# Directorios de Vite para frontend
+/.vite/
+/.vscode/
