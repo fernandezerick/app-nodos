@@ -1,30 +1,26 @@
-version: '3.8'
-
 services:
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "5173:5173"     
-    command: npm run docker:dev
-    volumes:
-      - ./frontend:/app  
-    working_dir: /app
-    environment:
-      - CHOKIDAR_USEPOLLING=true 
-    depends_on:
-      - backend
-
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"     
-    command: npm run docker:dev
+      - "3000:3000"
     volumes:
-      - ./backend:/app  
+      - ./backend:/app
+    command: npm run docker:dev
     working_dir: /app
     environment:
-      - CHOKIDAR_USEPOLLING=true 
+      - CHOKIDAR_USEPOLLING=true
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    # volumes:
+    #   - ./frontend:/app  # Temporalmente comenta esta línea para probar
+    command: npm run docker:dev
+    working_dir: /app
+    environment:
+      - CHOKIDAR_USEPOLLING=true

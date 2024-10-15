@@ -1,33 +1,49 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import fs from 'fs';
 import path from 'path';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = 3000;
 
-interface Node {
-  id: number;
-  node: string;
-  value: number;
-  nodeList?: number[] | Node[];
-}
+app.get('/nodes', (req, res) => {
+  const filePath = path.join(__dirname, 'data', 'nodes.json');
 
-app.get('/nodes', (req: Request, res: Response) => {
-  const filePath = path.join(__dirname, 'nodes.json');
-  const jsonData: Node[] = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-
-  const sortedData = jsonData.map((node) => {
-    if (node.nodeList) {
-      node.nodeList = (node.nodeList as number[]).map(
-        (id) => jsonData.find((n) => n.id === id)!
-      );
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading the file:', err);
+      return res.status(500).json({ error: 'Error reading the file' });
     }
-    return node;
-  });
 
-  res.json(sortedData);
+    try {
+      const nodes = JSON.parse(data);
+      
+      const transformedNodes = transformNodes(nodes);
+
+      return res.json(transformedNodes);
+    } catch (parseError) {
+      console.error('Error parsing JSON:', parseError);
+      return res.status(500).json({ error: 'Error parsing JSON' });
+    }
+  });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+//Funcion que transforma los nodos
+function transformNodes(nodes: any[]) {
+  const nodeMap = new Map<number, any>();
+
+  nodes.forEach((node) => {
+    nodeMap.set(node.id, node);
+  });
+
+  nodes.forEach((node) => {
+    if (node.nodeList) {
+      node.nodeList = node.nodeList.map((id: number) => nodeMap.get(id));
+    }
+  });
+
+  return nodes;
+}
+
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
