@@ -18,9 +18,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5173:5173"
-    # volumes:
-    #   - ./frontend:/app  # Temporalmente comenta esta línea para probar
-    command: npm run docker:dev
+    volumes:
+      - ./frontend:/app
     working_dir: /app
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+    command: npm run docker:dev
