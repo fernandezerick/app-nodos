@@ -20,7 +20,22 @@ function App() {
   return (
     <div>
       <h1>Nodes</h1>
-      <pre>{JSON.stringify(nodes, null, 2)}</pre>
+      <ul>
+        {nodes.map((node) => (
+          <li key={node.id}>
+            <strong>{node.node}</strong> (Value: {node.value})
+            {node.nodeList && (
+              <ul>
+                {node.nodeList.map((childNode) => (
+                  <li key={childNode.id}>
+                    <strong>{childNode.node}</strong> (Value: {childNode.value})
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
